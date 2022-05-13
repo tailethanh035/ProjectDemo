@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <title>Home Page</title>
+</head>
+
+<style>
+    img {
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 250px;
+        max-height: 250px;
+    }
+</style>
+
+<body>
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+    <div class="w3-container w3-display-container w3-padding-16">
+        <i onclick="w3_open()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+        <h3 class="w3-wide"><b>LOGO</b></h3>
+    </div>
+    <div class="w3-padding-64 w3-large w3-text-black" style="font-weight:bold">
+        <a th:href="@{/}" class="w3-bar-item w3-button">Home</a>
+        <a th:href="@{/admin/items/}" class="w3-bar-item w3-button">Items</a>
+        <a th:href="@{/admin/orders}" class="w3-bar-item w3-button">Orders</a>
+        <a th:href="@{/admin/accounts}" class="w3-bar-item w3-button">Accounts</a>
+    </div>
+</nav>
+
+<!-- Top menu on small screens -->
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+    <div class="w3-bar-item w3-padding-24 w3-wide">LOGO</div>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+</header>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:250px; padding-bottom: 200px">
+
+<!--    Alert-->
+    <div id="deleteAlert" class="w3-modal">
+        <div class="w3-modal-content">
+            <header class="w3-container w3-red">
+        <span onclick="document.getElementById('deleteAlert').style.display='none'"
+              class="w3-button w3-display-topright">&times;</span>
+                <h2>Warning</h2>
+            </header>
+            <div class="w3-container">
+                <p>Do you want to delete this item</p>
+            </div>
+            <footer class="w3-container">
+                <a href="" id="yesBtn">  <button  class="w3-button w3-green w3-right w3-margin-bottom">Yes</button>
+                </a>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <form hidden="hidden" th:action="@{/logout}" method="post" name="logOutForm" class="w3-bar-item">
+    </form>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge">
+        <p class="w3-right">
+        <button class="w3-bar-item w3-button" onclick="logOutFormSubmit()">Log Out</button>
+        </p>
+    </header>
+
+    <div class="w3-container w3-black w3-center w3-allerta w3-bar w3-xlarge">
+        <p class="w3-xxlarge">Item Control Panel</p>
+    </div>
+
+    <div class="w3-panel w3-green" th:if="${message != null }">
+        <h3>Alert</h3>
+        <p>[[${message}]]</p>
+    </div>
+
+    <header class="w3-container w3-xlarge">
+        <p class="w3-left">
+         <form class="w3-container" th:action="@{/admin/items/page/1}">
+        <input type="hidden" name="sortType" th:value="${sortType}"/>
+        <input type="hidden" name="sortOrder" th:value="${sortOrder}">
+        <label class="w3-text-black w3-margin-bottom"><b>Search</b></label>
+        <div class="w3-container">
+            <input class="w3-input w3-border w3-white w3-left" name="keyword" style="width: 40%; display: inline-block" type="search" required>
+            <button type="submit" class="w3-button w3-left" style="display: inline-block"><i class="fa fa-search"></i></button>
+        </div>
+        </form>
+        </p>
+        <p class="w3-right w3-margin-right">
+            <a th:href="@{/admin/items/additem}"> <button class="w3-button w3-black w3-padding-large w3-large">Add Item</button> </a>
+        </p>
+
+    </header>
+
+    <div class="w3-responsive">
+        <TABLE class="w3-table w3-striped w3-bordered">
+            <tr>
+                <th> <a th:href="@{'/admin/items/page/' + ${currentPage} + '?sortType=itemID&sortOrder=' + ${sortReversed}}">Items ID
+                </a>
+                    <span th:if="${sortType == 'itemID'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th> <a th:href="@{'/admin/items/page/' + ${currentPage} + '?sortType=name&sortOrder=' + ${sortReversed}}">Name
+                </a>
+                    <span th:if="${sortType == 'name'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th>Photo</th>
+                <th> <a th:href="@{'/admin/items/page/' + ${currentPage} + '?sortType=type&sortOrder=' + ${sortReversed}}">Type
+                </a>
+                    <span th:if="${sortType == 'type'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th> <a th:href="@{'/admin/items/page/' + ${currentPage} + '?sortType=gender&sortOrder=' + ${sortReversed}}">Gender
+                </a>
+                    <span th:if="${sortType == 'gender'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th> <a th:href="@{'/admin/items/page/' + ${currentPage} + '?sortType=retailPrice&sortOrder=' + ${sortReversed}}">Retail Price
+                </a>
+                    <span th:if="${sortType == 'retailPrice'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th>Discounted Price</th>
+                <th>XS</th>
+                <th>S</th>
+                <th>M</th>
+                <th>L</th>
+                <th>XL</th>
+                <th>Date</th>
+                <span th:if="${sortType == 'date'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                <th></th>
+                <th></th>
+
+            </tr>
+            <tr th:each="item : ${itemlist}">
+                <td> [[${item.itemID}]]</td>
+                <td> [[${item.name}]]</td>
+                <td> <img th:src="|data:image;base64,*{item.photo}|" class="w3-image">
+                </td>
+                <td> [[${item.type}]]</td>
+                <td> [[${item.gender}]]</td>
+                <td> [[${item.retailPrice}]]</td>
+                <td> [[${item.discountedPrice}]]</td>
+                <td> [[${item.XS}]]</td>
+                <td> [[${item.s}]]</td>
+                <td> [[${item.m}]]</td>
+                <td> [[${item.l}]]</td>
+                <td> [[${item.XL}]]</td>
+                <td> [[${item.date}]]</td>
+                <td class="w3-right">
+                    <a class="w3-button w3-red w3-center link-delete w3-margin-bottom" onclick="document.getElementById('deleteAlert').style.display='block'" th:href="@{'/admin/items/delete/' + ${item.itemID}}"> Delete </a>
+
+                    <a class="w3-button w3-green w3-center w3-margin-bottom" th:href="@{'/admin/items/update/' + ${item.itemID}}"> Update</a>
+                    <a class="w3-button w3-green w3-center w3-margin-bottom" th:href="@{'/admin/items/add_images/' + ${item.itemID}}"> Add Images</a>
+                </td>
+                <td class="w3-right">
+                </td>
+            </tr>
+        </TABLE>
+
+        <div class="w3-bar w3-margin-top">
+
+            <a href="#" class="w3-button w3-border-left" th:href="@{'/admin/items/page/1' + '?sortType=' + ${sortType} + '&sortOrder=' + ${sortOrder}  + ${keyword != null ? '&keyword' + keyword : ''}}" th:if="${currentPage > 1 }">First Page</a>
+            <a href="#" class="w3-button" th:href="@{'/admin/items/page/' + ${currentPage-1}+ '?sortType=' + ${sortType} + '&sortOrder=' + ${sortOrder} + ${keyword != null ? '&keyword' + keyword : ''}}" th:if="${currentPage > 1 }">«</a>
+                <div style="display: inline-block" th:each="i : ${#numbers.sequence(1,currentPage - 1)}">
+                    <a class="w3-button" th:href="@{'/admin/items/page/' + ${i}+ '?sortType=' + ${sortType} + '&sortOrder=' + ${sortOrder} + ${keyword != null ? '&keyword' + keyword : ''}}" th:if="${currentPage > 1 }"> [[${i}]]</a>
+                </div>
+                <div style="display: inline-block" class ="w3-green">
+                    <a  class="w3-button">[[${currentPage}]] </a>
+                </div>
+                <div style="display: inline-block" th:each="i : ${#numbers.sequence(currentPage, totalPage)}">
+                    <a  class="w3-button" th:href="@{'/admin/items/page/' + ${i} + '?sortType=' + ${sortType} + '&sortOrder=' + ${sortOrder} + ${keyword != null ? '&keyword' + keyword : ''}}"  th:if="${i > currentPage && i <= totalPage && i < (currentPage + 3)}"> [[${i}]]</a>
+                </div>
+            <a class="w3-button" th:href="@{'/admin/items/page/' + ${currentPage+1} + '?sortType=' + ${sortType} + '&sortOrder=' + ${sortOrder} + ${keyword != null ? '&keyword' + keyword : ''}}"  th:if="${currentPage < totalPage}">»</a>
+            <a class="w3-button w3-border-right" th:href="@{'/admin/items/page/' + ${totalPage}+ '?sortType=' + ${sortType} + '&sortOrder=' + ${sortOrder} + ${keyword != null ? '&keyword' + keyword : ''}}" th:if="${currentPage < totalPage}">Last Page</a>
+        </div>
+    </div >
+</div>
+<div class="w3-container w3-black w3-center w3-bar w3-bottom w3-large w3-hide-small" style="height: 70px; z-index: 4" >
+    &copy Copyright of Tai Thanh Le <br> Enterprise Application Development
+</div>
+
+</body>
+
+<script type="text/javascript">
+    let isOpenned = false;
+    $(document).ready(function (){
+        $(".link-delete").on("click", function (e) {
+            e.preventDefault();
+            $('#yesBtn').attr("href", $(this).attr("href"));
+        })
+    })
+
+    function w3_open() {
+        if (isOpenned == true) {
+            isOpenned = false;
+            document.getElementById("mySidebar").style.display = "none";
+        } else {
+            isOpenned = true;
+            document.getElementById("mySidebar").style.display = "block";
+        }
+    }
+
+    function logOutFormSubmit() {
+        document.logOutForm.submit();
+    }
+
+</script>
+</html>

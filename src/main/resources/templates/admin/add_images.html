@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <title>Home Page</title>
+</head>
+
+<style>
+
+    img {
+        width: 300px;
+        height: 300px;
+        min-width: 260px;
+        min-height: 260px;
+     }
+
+</style>
+
+<body>
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+    <div class="w3-container w3-display-container w3-padding-16">
+        <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+        <h3 class="w3-wide"><b>LOGO</b></h3>
+    </div>
+    <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
+        <a href="#" class="w3-bar-item w3-button">Shirts</a>
+        <a href="#" class="w3-bar-item w3-button">Dresses</a>
+        <a onclick="myAccFunc()" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align" id="myBtn">
+            Jeans <i class="fa fa-caret-down"></i>
+        </a>
+        <div id="demoAcc" class="w3-bar-block w3-hide w3-padding-large w3-medium">
+            <a href="#" class="w3-bar-item w3-button w3-light-grey"><i class="fa fa-caret-right w3-margin-right"></i>Skinny</a>
+            <a href="#" class="w3-bar-item w3-button">Relaxed</a>
+            <a href="#" class="w3-bar-item w3-button">Bootcut</a>
+            <a href="#" class="w3-bar-item w3-button">Straight</a>
+        </div>
+        <a href="#" class="w3-bar-item w3-button">Jackets</a>
+        <a href="#" class="w3-bar-item w3-button">Gymwear</a>
+        <a href="#" class="w3-bar-item w3-button">Blazers</a>
+        <a href="#" class="w3-bar-item w3-button">Shoes</a>
+    </div>
+    <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Newsletter</a>
+    <a href="#footer"  class="w3-bar-item w3-button w3-padding">Subscribe</a>
+</nav>
+
+<!-- Top menu on small screens -->
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+    <div class="w3-bar-item w3-padding-24 w3-wide">LOGO</div>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+</header>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:250px">
+
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <!-- Top header -->
+    <header class="w3-container w3-xlarge">
+        <p class="w3-right">
+            <a th:href="@{/login}"> <button class="w3-button w3-white w3-padding-large w3-large">LOG IN</button> </a>
+            <a href="#" class="w3-bar-item w3-button"><i class="fa fa-shopping-cart w3-margin-right"></i></a>
+            <a href="#" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
+        </p>
+    </header>
+
+    <div class="w3-container w3-green w3-center w3-allerta w3-bar w3-xlarge">
+        <p class="w3-xxlarge">[[${updatedItem}]]</p>
+    </div>
+
+    <div class="w3-card-4">
+        <div class="w3-container w3-black">
+            <h2>Add Images</h2>
+        </div>
+
+        <form class="w3-container" th:action="@{/admin/items/saveImage}" method="post" enctype="multipart/form-data" style=" padding-bottom: 250px">
+            <input type="hidden" name="id" th:value="${item_id}" >
+            <p id="image_container">
+                <label class="w3-text-black"><b>Please upload one or more images to the item</b></label>
+                <input type="file" id="imageFiles" name="image" accept="image/png, image/jpeg" multiple required/>
+            </p>
+
+            <div class="w3-container">
+                <div class="gallery w3-margin" id="gallery" >
+                </div>
+            </div>
+
+            <div class="w3-container">
+                <button class="w3-btn w3-teal w3-large w3-bordered w3-margin w3-">Submit</button>
+            </div>
+        </form>
+
+        <div class="w3-container">
+            <div class="w3-margin " th:each="image:${imageList}">
+                <div class="w3-left w3-container w3-margin">
+                    <img th:src="|data:image;base64,*{image.photo }|" class="w3-image">
+                    <a class="w3-button w3-red" th:href="@{'/admin/items/delete_image/' + ${image.image_id}}"> Delete</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+left
+
+</body>
+
+<script>
+    $(function() {
+        // https://stackoverflow.com/questions/39439760/preview-images-before-upload
+        var imagesPreview = function(input, placeToInsertImagePreview) {
+            if (input.files) {
+                $('#yesBtn')
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        $($.parseHTML('<img>')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        };
+        $('#imageFiles').on('change', function() {
+            $('#gallery').empty();
+            imagesPreview(this, 'div.gallery');
+        });
+    });
+
+
+    // Accordion
+    function myAccFunc() {
+        var x = document.getElementById("demoAcc");
+        if (x.className.indexOf("w3-show") == -1) {
+            x.className += " w3-show";
+        } else {
+            x.className = x.className.replace(" w3-show", "");
+        }
+    }
+
+    // Click on the "Jeans" link on page load to open the accordion for demo purposes
+
+    // Open and close sidebar
+    function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+    }
+
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+    }
+</script>
+</html>
