@@ -16,5 +16,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("select i from Customer i where i.firstName like %?1% or i.address like %?1% or i.lastName like %?1% or i.email like %?1% or i.phoneNumber like %?1%")
     Page<Customer> findALlByKeyword(String keyword, Pageable pageable);
+
+    Customer findByCustomerID(Long id);
+
+    Customer findByUsername(String username);
 }
+
 

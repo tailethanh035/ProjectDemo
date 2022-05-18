@@ -34,7 +34,11 @@ public class CustomerService implements UserDetailsService {
     }
 
     public void addCustomer(Customer customer) {
-        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        if (customer.getPassword() == null) {
+            customer.setPassword(repository.getCustomerByUsername(customer.getUsername()).getPassword());
+        } else
+            customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+
         repository.save(customer);
     }
 
@@ -74,6 +78,10 @@ public class CustomerService implements UserDetailsService {
         if (page < 1)
             page = page + 1;
         return page;
+    }
+
+    public Customer findByUsername(String username) {
+        return repository.findByUsername(username);
     }
 
     public void changeStatus(Long id) {

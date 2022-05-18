@@ -51,10 +51,10 @@ public class AuthenticationController {
         try {
             customerService.addCustomer(customer);
         } catch (org.hibernate.exception.ConstraintViolationException e) {
-            redirectAttributes.addFlashAttribute("message", "Username or email already exists");
+            redirectAttributes.addFlashAttribute("message", "Username,email or phone number already exists");
             return "redirect:/register";
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("message", "Username or email already exists");
+            redirectAttributes.addFlashAttribute("message", "Username,email or phone number already exists");
             return "redirect:/register";
         } catch (Exception e) {
             e.printStackTrace();

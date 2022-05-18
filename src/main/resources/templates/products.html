@@ -8,113 +8,133 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/white_logo.jpg}">
 
-    <title>Home Page</title>
+    <title>Shopping Page</title>
 </head>
+<style>
+    .logo {
+        width: 150px;
+        height: 150px;
+    }
+</style>
 <body>
 
-<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px;padding-bottom: 50px" id="mySidebar" >
     <div class="w3-container w3-display-container w3-padding-16">
         <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
-        <h3 class="w3-wide"><b>LOGO</b></h3>
+        <a th:href="@{/}"><img th:src="@{images/white_logo.jpg}" class="w3-image logo"></a>
     </div>
-
-    <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
-        <a th:href="@{'/products/page/1?gender=Men'}" class="w3-bar-item w3-button" th:classappend="${gender == 'Men'} ? 'w3-block w3-white w3-left-align' : ''">
+    <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold; margin-bottom: 0px">
+        <a th:href="@{'/products?gender=Men&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${gender == 'Men'} ? 'w3-block w3-white w3-left-align' : ''">
             <i class="fa fa-caret-down" th:if="${gender == 'Men'}"></i> Men</a>
         <div id="menList" class="w3-bar-block w3-padding-large w3-medium" th:if="${gender == 'Men'}">
-            <a th:href="@{'/products/page/1?gender=' + ${gender}}" class="w3-bar-item w3-button" th:classappend="${type == null} ? 'w3-light-grey' : ''"><i th:if="${type == null}" class="fa fa-caret-right w3-margin-right"></i>All Categories</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shirt'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shirt'}" class="fa fa-caret-right w3-margin-right"></i>Shirt</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=TShirt'}" class="w3-bar-item w3-button" th:classappend="${type == 'TShirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'TShirt'}" class="fa fa-caret-right w3-margin-right"></i>TShirt</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Jacket'}" class="w3-bar-item w3-button" th:classappend="${type == 'Jacket'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Jacket'}" class="fa fa-caret-right w3-margin-right"></i>Jacket</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Pants'}" class="w3-bar-item w3-button" th:classappend="${type == 'Pants'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Pants'}" class="fa fa-caret-right w3-margin-right"></i>Pants</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shorts'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shorts'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shorts'}" class="fa fa-caret-right w3-margin-right"></i>Shorts</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shoes'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shoes'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shoes'}" class="fa fa-caret-right w3-margin-right"></i>Shoes</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == null} ? 'w3-light-grey' : ''"><i th:if="${type == null}" class="fa fa-caret-right w3-margin-right"></i>All Categories</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shirt' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shirt'}" class="fa fa-caret-right w3-margin-right"></i>Shirt</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=TShirt' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'TShirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'TShirt'}" class="fa fa-caret-right w3-margin-right"></i>TShirt</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Jacket' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Jacket'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Jacket'}" class="fa fa-caret-right w3-margin-right"></i>Jacket</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Pants' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Pants'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Pants'}" class="fa fa-caret-right w3-margin-right"></i>Pants</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shorts' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shorts'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shorts'}" class="fa fa-caret-right w3-margin-right"></i>Shorts</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shoes' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shoes'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shoes'}" class="fa fa-caret-right w3-margin-right"></i>Shoes</a>
         </div>
 
-        <a th:href="@{'/products/page/1?gender=Women'}" class="w3-bar-item w3-button" th:classappend="${gender == 'Women'} ? 'w3-block w3-white w3-left-align' : ''">
+        <a th:href="@{'/products?gender=Women&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${gender == 'Women'} ? 'w3-block w3-white w3-left-align' : ''">
             <i class="fa fa-caret-down" th:if="${gender == 'Women'}"></i> Women</a>
         <div class="w3-bar-block w3-padding-large w3-medium" th:if="${gender == 'Women'}">
-            <a th:href="@{'/products/page/1?gender=' + ${gender}}" class="w3-bar-item w3-button" th:classappend="${type == null} ? 'w3-light-grey' : ''"><i th:if="${type == null}" class="fa fa-caret-right w3-margin-right"></i>All Categories</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shirt'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shirt'}" class="fa fa-caret-right w3-margin-right"></i>Shirt</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=TShirt'}" class="w3-bar-item w3-button" th:classappend="${type == 'TShirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'TShirt'}" class="fa fa-caret-right w3-margin-right"></i>TShirt</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Jacket'}" class="w3-bar-item w3-button" th:classappend="${type == 'Jacket'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Jacket'}" class="fa fa-caret-right w3-margin-right"></i>Jacket</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Pants'}" class="w3-bar-item w3-button" th:classappend="${type == 'Pants'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Pants'}" class="fa fa-caret-right w3-margin-right"></i>Pants</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shorts'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shorts'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shorts'}" class="fa fa-caret-right w3-margin-right"></i>Shorts</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Dress'}" class="w3-bar-item w3-button" th:classappend="${type == 'Dress'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Dress'}" class="fa fa-caret-right w3-margin-right"></i>Dress</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shoes'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shoes'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shoes'}" class="fa fa-caret-right w3-margin-right"></i>Shoes</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == null} ? 'w3-light-grey' : ''"><i th:if="${type == null}" class="fa fa-caret-right w3-margin-right"></i>All Categories</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shirt' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shirt'}" class="fa fa-caret-right w3-margin-right"></i>Shirt</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=TShirt' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'TShirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'TShirt'}" class="fa fa-caret-right w3-margin-right"></i>TShirt</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Jacket' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Jacket'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Jacket'}" class="fa fa-caret-right w3-margin-right"></i>Jacket</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Pants' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Pants'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Pants'}" class="fa fa-caret-right w3-margin-right"></i>Pants</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shorts' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shorts'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shorts'}" class="fa fa-caret-right w3-margin-right"></i>Shorts</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Dress' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Dress'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Dress'}" class="fa fa-caret-right w3-margin-right"></i>Dress</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shoes' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shoes'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shoes'}" class="fa fa-caret-right w3-margin-right"></i>Shoes</a>
         </div>
 
-        <a th:href="@{'/products/page/1?gender=Girl'}" class="w3-bar-item w3-button" th:classappend="${gender == 'Girl'} ? 'w3-block w3-white w3-left-align' : ''">
+        <a th:href="@{'/products?gender=Girl&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${gender == 'Girl'} ? 'w3-block w3-white w3-left-align' : ''">
             <i class="fa fa-caret-down" th:if="${gender == 'Girl'}"></i> Girl</a>
         <div id="GirlList" class="w3-bar-block w3-padding-large w3-medium" th:if="${gender == 'Girl'}">
-            <a th:href="@{'/products/page/1?gender=' + ${gender}}" class="w3-bar-item w3-button" th:classappend="${type == null} ? 'w3-light-grey' : ''"><i th:if="${type == null}" class="fa fa-caret-right w3-margin-right"></i>All Categories</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shirt'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shirt'}" class="fa fa-caret-right w3-margin-right"></i>Shirt</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=TShirt'}" class="w3-bar-item w3-button" th:classappend="${type == 'TShirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'TShirt'}" class="fa fa-caret-right w3-margin-right"></i>TShirt</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Jacket'}" class="w3-bar-item w3-button" th:classappend="${type == 'Jacket'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Jacket'}" class="fa fa-caret-right w3-margin-right"></i>Jacket</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Pants'}" class="w3-bar-item w3-button" th:classappend="${type == 'Pants'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Pants'}" class="fa fa-caret-right w3-margin-right"></i>Pants</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shorts'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shorts'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shorts'}" class="fa fa-caret-right w3-margin-right"></i>Shorts</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Dress'}" class="w3-bar-item w3-button" th:classappend="${type == 'Dress'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Dress'}" class="fa fa-caret-right w3-margin-right"></i>Dress</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shoes'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shoes'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shoes'}" class="fa fa-caret-right w3-margin-right"></i>Shoes</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == null} ? 'w3-light-grey' : ''"><i th:if="${type == null}" class="fa fa-caret-right w3-margin-right"></i>All Categories</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shirt' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shirt'}" class="fa fa-caret-right w3-margin-right"></i>Shirt</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=TShirt' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'TShirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'TShirt'}" class="fa fa-caret-right w3-margin-right"></i>TShirt</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Jacket' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Jacket'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Jacket'}" class="fa fa-caret-right w3-margin-right"></i>Jacket</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Pants' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Pants'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Pants'}" class="fa fa-caret-right w3-margin-right"></i>Pants</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shorts' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shorts'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shorts'}" class="fa fa-caret-right w3-margin-right"></i>Shorts</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shoes' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shoes'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shoes'}" class="fa fa-caret-right w3-margin-right"></i>Shoes</a>
         </div>
 
-        <a th:href="@{'/products/page/1?gender=Boy'}" class="w3-bar-item w3-button" th:classappend="${gender == 'Boy'} ? 'w3-block w3-white w3-left-align' : ''">
+        <a th:href="@{'/products?gender=Boy&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${gender == 'Boy'} ? 'w3-block w3-white w3-left-align' : ''">
             <i class="fa fa-caret-down" th:if="${gender == 'Boy'}"></i> Boy</a>
         <div id="boyList" class="w3-bar-block w3-padding-large w3-medium" th:if="${gender == 'Boy'}">
-            <a th:href="@{'/products/page/1?gender=' + ${gender}}" class="w3-bar-item w3-button" th:classappend="${type == null} ? 'w3-light-grey' : ''"><i th:if="${type == null}" class="fa fa-caret-right w3-margin-right"></i>All Categories</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shirt'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shirt'}" class="fa fa-caret-right w3-margin-right"></i>Shirt</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=TShirt'}" class="w3-bar-item w3-button" th:classappend="${type == 'TShirt'} ? 'w3-light-grey' : ''"><i th:if="${type== 'TShirt'}" class="fa fa-caret-right w3-margin-right"></i>TShirt</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Jacket'}" class="w3-bar-item w3-button" th:classappend="${type == 'Jacket'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Jacket'}" class="fa fa-caret-right w3-margin-right"></i>Jacket</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Pants'}" class="w3-bar-item w3-button" th:classappend="${type == 'Pants'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Pants'}" class="fa fa-caret-right w3-margin-right"></i>Pants</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shorts'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shorts'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shorts'}" class="fa fa-caret-right w3-margin-right"></i>Shorts</a>
-            <a th:href="@{'/products/page/1?gender=' + ${gender} + '&type=Shoes'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shoes'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shoes'}" class="fa fa-caret-right w3-margin-right"></i>Shoes</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == null} ? 'w3-light-grey' : ''"><i th:if="${type == null}" class="fa fa-caret-right w3-margin-right"></i>All Categories</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shirt' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shirt'}" class="fa fa-caret-right w3-margin-right"></i>Shirt</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=TShirt' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'TShirt'} ? 'w3-light-grey' : ''"><i th:if="${type == 'TShirt'}" class="fa fa-caret-right w3-margin-right"></i>TShirt</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Jacket' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Jacket'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Jacket'}" class="fa fa-caret-right w3-margin-right"></i>Jacket</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Pants' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Pants'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Pants'}" class="fa fa-caret-right w3-margin-right"></i>Pants</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shorts' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shorts'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shorts'}" class="fa fa-caret-right w3-margin-right"></i>Shorts</a>
+            <a th:href="@{'/products?gender=' + ${gender} + '&type=Shoes' + '&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button" th:classappend="${type == 'Shoes'} ? 'w3-light-grey' : ''"><i th:if="${type == 'Shoes'}" class="fa fa-caret-right w3-margin-right"></i>Shoes</a>
         </div>
     </div>
     <a th:href="@{/admin/}" class="w3-bar-item w3-button w3-padding">Administrator</a>
-    <a href="#footer"  class="w3-bar-item w3-button w3-padding">About</a>
+    <a th:href="@{/my_orders}" class="w3-bar-item w3-button w3-padding" sec:authorize="isAuthenticated()">Account Management</a>
 </nav>
 
-
-<!-- Top menu on small screens -->
 <header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
-    <div class="w3-bar-item w3-padding-24 w3-wide">LOGO</div>
-    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+    <a th:href="@{/}">    <div class="w3-bar-item w3-padding-24 w3-wide">RTClothing</div>
+    </a>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right fa fa-bars" onclick="w3_open()">
+    </a>
 </header>
 
-<!-- Overlay effect when opening sidebar on small screens -->
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
-<!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:250px">
+<div class="w3-main" style="margin-left:250px; margin-right: 150px" >
 
-    <!-- Push down content on small screens -->
     <div class="w3-hide-large" style="margin-top:83px"></div>
 
     <form hidden="hidden" th:action="@{/logout}" method="post" name="logOutForm" class="w3-bar-item">
     </form>
-    <!-- Top header -->
     <header class="w3-container w3-xlarge">
         <p class="w3-right">
-            <a th:href="@{/login}" sec:authorize="isAnonymous()" class="w3-bar-item w3-button">Log in</button> </a>
-            <a href="#" class="w3-bar-item w3-button"><i class="fa fa-shopping-cart w3-margin-right"></i></a>
-            <a href="#" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
-             <button class="w3-bar-item w3-button" sec:authorize="isAuthenticated()" onclick="logOutFormSubmit()">Log Out</button>
+            <a th:href="@{/login}" sec:authorize="isAnonymous()" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
+            <a th:href="@{/shopping_cart}" class="w3-bar-item w3-button fa fa-shopping-cart w3-display-container"> <span class="w3-display-topright w3-red w3-circle" style="padding: 2px; font-size: 20px; padding-left: 5px; padding-right: 5px">[[${cart}]]</span> </a>
+            <a th:href="@{/search_item}" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
+            <button class="w3-bar-item w3-button" sec:authorize="isAuthenticated()" onclick="logOutFormSubmit()">Log Out</button>
         </p>
         <p sec:authorize="isAuthenticated()"> Welcome <span sec:authentication="principal.username"></span>  </p>
     </header>
 
+    <div class="w3-container w3-right w3-border w3-dropdown-hover w3-padding" style="margin-bottom: 50px; margin-right: 100px">
+        <label> Sort By:
+        <span th:if="${sortType == 'itemID' && sortOrder == 'des'}">Newest</span>
+        <span th:if="${sortType == 'discountedPrice' && sortOrder == 'asc'}">Lowest to Highest Price</span>
+        <span th:if="${sortType == 'discountedPrice' && sortOrder == 'des'}">Highest to Lowest Price</span>
+        </label>
+        <div class="w3-dropdown-content w3-bar-block w3-card-4">
+            <a th:href="@{'/products?gender=' + ${gender} + ${type != null ? '&type=' + type : ''} + '&sortType=itemID&sortOrder=des'}"  class="w3-bar-item w3-button">Newest</a>
+            <a th:href="@{'/products?gender=' + ${gender} + ${type != null ? '&type=' + type : ''} + '&sortType=discountedPrice&sortOrder=asc'}" class="w3-bar-item w3-button">Lowest to Highest Price</a>
+            <a th:href="@{'/products?gender=' + ${gender} + ${type != null ? '&type=' + type : ''} + '&sortType=discountedPrice&sortOrder=des'}" class="w3-bar-item w3-button">Highest to Lowest Price</a>
+        </div>
+    </div>
 
-    <div class="w3-row" >
-        <div class="w3-col l3 s6" th:each="item : ${itemlist}">
-            <div class="w3-container">
-                <img th:src="|data:image;base64,*{item.photo}|" class="w3-image" style="width:50%">
-                <p>[[${item.name}]]<br><b>[[${item.retailPrice}]]</b></p>
+    <div class="w3-row" style="margin-bottom: 200px">
+        <div class="w3-col l3 s6" th:each="item : ${itemlist}" style="margin-bottom: 40px">
+            <div class="w3-container w3-center" >
+                <a th:href="@{'/item_detail/' + ${item.itemID}}">
+                    <img th:src="|data:image;base64,*{item.photo}|"  style="width:100%">
+                    <span class="w3-tag w3-display-topleft">Sale</span>
+                </a>
+                <p class="w3-large">  [[${item.name}]]
+                    <br> <b> <span th:style="${item.discountedBy > 0 ? 'text-decoration-line: line-through;margin-right:10px;color:gray; font-style:italic':''}">
+                        [[${item.retailPrice}]]$ </span> <span th:if="${item.discountedBy > 0}" class="w3-text-red w3-cursive">now only [[${item.discountedPrice}]]$</span> </b></p>
+
             </div>
         </div>
     </div>
 
+
 </div>
-<div class="w3-container w3-black w3-center w3-bar w3-bottom w3-large w3-hide-small" style="height: 70px; z-index: 4" >
+<div class="w3-container w3-black w3-center w3-bar w3-bottom w3-large w3-hide-small w3-hide-medium" style="height: 70px; z-index: 4" >
     &copy Copyright of Tai Thanh Le <br> Enterprise Application Development
 </div>
 </body>

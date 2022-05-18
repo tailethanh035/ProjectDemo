@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/white_logo.jpg}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <title>Shopping Cart</title>
+</head>
+<style>
+    img {
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 250px;
+        max-height: 250px;
+    }
+    .logo {
+        width: 150px;
+        height: 150px;
+    }
+</style>
+
+<body>
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+    <div class="w3-container w3-display-container w3-padding-16">
+        <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+        <a th:href="@{/}"><img th:src="@{images/white_logo.jpg}" class="w3-image logo"></a>
+    </div>
+    <div class="w3-padding-64 w3-xlarge w3-text-grey" style="font-weight:bold">
+        <a th:href="@{'/products?gender=Men&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Men</a>
+
+        <a th:href="@{'/products?gender=Women&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Women</a>
+
+        <a th:href="@{'/products?gender=Girl&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Girl</a>
+
+        <a th:href="@{'/products?gender=Boy&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Boy</a>
+    </div>
+    <a th:href="@{/admin/}" class="w3-bar-item w3-button w3-padding">Administrator</a>
+    <a th:href="@{/my_orders}" class="w3-bar-item w3-button w3-padding" sec:authorize="isAuthenticated()">Account Management</a>
+</nav>
+
+
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+    <a th:href="@{/}">    <div class="w3-bar-item w3-padding-24 w3-wide">RTClothing</div>
+    </a>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right fa fa-bars" onclick="w3_open()">
+    </a>
+
+</header>
+
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+ <div class="w3-main" style="margin-left:250px; margin-right: 150px">
+
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <form hidden="hidden" th:action="@{/logout}" method="post" name="logOutForm" class="w3-bar-item">
+    </form>
+     <header class="w3-container w3-xlarge">
+         <p class="w3-right">
+             <a th:href="@{/login}" sec:authorize="isAnonymous()" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
+             <a th:href="@{/shopping_cart}" class="w3-bar-item w3-button fa fa-shopping-cart w3-display-container"> <span class="w3-display-topright w3-red w3-circle" style="padding: 2px; font-size: 20px; padding-left: 5px; padding-right: 5px">[[${cart}]]</span> </a>
+             <a th:href="@{/search_item}" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
+             <button class="w3-bar-item w3-button" sec:authorize="isAuthenticated()" onclick="logOutFormSubmit()">Log Out</button>
+         </p>
+         <p sec:authorize="isAuthenticated()"> Welcome <span sec:authentication="principal.username"></span>  </p>
+     </header>
+    <div class="w3-container w3-black w3-center w3-allerta w3-bar w3-xlarge">
+        <p class="w3-xxlarge">Shopping Cart <i class="fa fa-shopping-cart"></i> </p>
+    </div>
+
+    <div class="w3-panel w3-red" th:if="${message != null }">
+        <h3>Alert</h3>
+        <p>[[${message}]]</p>
+    </div>
+
+    <div class="w3-responsive" >
+        <table class="w3-table w3-centered w3-bordered" style="width: 100%">
+            <tr>
+                <th> Product</th>
+                <th> Product Name</th>
+                <th> Product Type</th>
+                <th> Price</th>
+                <th> Discount (%)</th>
+                <th> Size </th>
+                <th> In Stock</th>
+                <th> Quantity</th>
+                <th></th>
+            </tr>
+            <tr th:each="cart, f : ${cartList}" class="w3-large w3-center">
+                <td> <img th:src="|data:image;base64,*{cart.photo}|" class="w3-image">
+                <td> [[${cart.name}]]</td>
+                <td> [[${cart.type}]]</td>
+                <td> [[${cart.price}]]  $</td>
+                <td> [[${cart.discountedBy}]]</td>
+                <td> [[${cart.size}]]</td>
+                <td> [[${cart.inStock}]]</td>
+                <td> [[${cart.quantity}]]
+                    <a class="w3-button	fa fa-angle-up w3-xlarge w3-text-green" th:href="@{'/up_quantity' + '?num=' + ${f.index}}"> </a>
+                    <a class="w3-button fa fa-angle-down w3-xlarge w3-text-red" th:href="@{'/down_quantity' + '?num=' + ${f.index}}"> </a>
+                </td>
+                <td> <a class="w3-button  w3-center fa fa-trash w3-xlarge" th:href="@{'/remove/' + ${f.index}}"> </a></td>
+            </tr>
+        </table>
+    </div>
+
+    <p class="w3-xlarge w3-text-gray w3-center" th:if="${totalCart == 0 || totalCart == null}" style="margin-top: 200px; font-style: italic"><b>There are no items in your shopping cart </b> </p>
+
+    <div class="w3-right w3-center w3-padding" style="margin-right: 50px; margin-top: 100px; margin-bottom: 200px; width: 300px" th:if="${totalCart > 0}">
+        <p class="w3-xlarge " style="width: 100%"> <b>Total Price</b> [[${totalCart}]] $</p>
+        <a th:href="@{/check_out}">
+            <button class="w3-button w3-black w3-xlarge w3-display" style="width: 100%">Check Out</button>
+        </a>
+        <p class="w3-large"> <i class="fa fa-truck"> Free Shipping every order</i> </p>
+        <p class="w3-large"> <i class="fa fa-refresh"> Free Return in 7 days</i> </p>
+
+    </div>
+
+
+</div>
+<div class="w3-container w3-black w3-center w3-bar w3-bottom w3-large w3-hide-small" style="height: 70px; z-index: 4" >
+    &copy Copyright of Tai Thanh Le <br> Enterprise Application Development
+</div>
+</body>
+
+<script>
+    function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+    }
+
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+    }
+
+
+    function logOutFormSubmit() {
+        document.logOutForm.submit();
+    }
+</script>
+</html>

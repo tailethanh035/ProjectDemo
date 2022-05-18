@@ -12,14 +12,15 @@ import org.springframework.stereotype.Service;
 import javax.print.attribute.standard.PageRanges;
 import org.springframework.data.domain.Pageable;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 @Service
 public class ItemService {
     public static final int ITEMS_PER_PAGE = 2;
-    public static final int PRODUCTS_PER_PAGE = 10;
     public static final String ASCENDING = "asc";
-    public static final String DESCENDING = "des";
+
 
 
     @Autowired
@@ -30,7 +31,19 @@ public class ItemService {
     }
 
     public  void addItem(Item item) {
+        item.setDiscountedPrice((item.getRetailPrice() * ((100 - item.getDiscountedBy())/ 100)));
+
+        Item buffer = itemRepository.findItemByItemID(item.getItemID());
+        NumberFormat formatter = new DecimalFormat("#0.0000");
+        item.setDiscountedPrice(Double.parseDouble(formatter.format(item.getDiscountedPrice())));
+        if (buffer != null && item.getPhoto().equals("")) {
+            item.setPhoto(buffer.getPhoto());
+        }
         itemRepository.save(item);
+    }
+
+    public Item findByID(Long id) {
+        return itemRepository.findItemByItemID(id);
     }
 
     public void deleteItem(Long id) throws Exception {
@@ -65,28 +78,27 @@ public class ItemService {
         }
     }
 
-    public List<Item> listProducts(Item.Gender gender, Item.Type type) {
-        if(type == null)
-            return itemRepository.findByGender(gender);
-        else
-            return itemRepository.findByTypeAndGender(type, gender);
-    }
+    public List<Item> findByKeyword(String keyword) {return itemRepository.findByKeyword(keyword);}
 
-    public Page<Item> listProducts(int num, String sortType, String sortOrder, String gender) {
-        Sort sort = Sort.by(sortType);
-
-        if (sortType == null || sortOrder == null) {
-            Pageable pageable = PageRequest.of(num-1, PRODUCTS_PER_PAGE);
-//            return itemRepository.findAllByGender(gender, pageable);
+    public List<Item> listProducts(Item.Gender gender, Item.Type type, String sortOrder, String sortType) {
+        if(type == null) {
+            if (sortType.equals("discountedPrice") && sortOrder.equals("asc"))
+                return itemRepository.findByGenderOrderByDiscountedPriceAsc(gender);
+            else if (sortType.equals("discountedPrice") && sortOrder.equals("des"))
+                return itemRepository.findByGenderOrderByDiscountedPriceDesc(gender);
+            else
+                return itemRepository.findByGenderOrderByItemIDDesc(gender);
         }
-        if (sortOrder.equals(ASCENDING))
-            sort.ascending();
-        else
-            sort.descending();
-
-        Pageable pageable = PageRequest.of(num-1, PRODUCTS_PER_PAGE, sort);
-        return itemRepository.findAll(pageable);
+        else {
+            if (sortType.equals("discountedPrice") && sortOrder.equals("asc"))
+                return itemRepository.findByTypeAndGenderOrderByDiscountedPriceAsc(type, gender);
+            else if (sortType.equals("discountedPrice") && sortOrder.equals("des"))
+                return itemRepository.findByTypeAndGenderOrderByDiscountedPriceDesc(type, gender);
+            else
+                return itemRepository.findByTypeAndGenderOrderByItemIDDesc(type, gender);
+        }
     }
+
 
     public Long getPage () {
         Long page = itemRepository.count() / ITEMS_PER_PAGE;

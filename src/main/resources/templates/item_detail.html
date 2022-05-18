@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/white_logo.jpg}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <title>Product</title>
+</head>
+
+<style>
+    .logo {
+        width: 150px;
+        height: 150px;
+    }
+</style>
+
+<body>
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+    <div class="w3-container w3-display-container w3-padding-16">
+        <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+        <a th:href="@{/}"><img th:src="@{../images/white_logo.jpg}" class="w3-image logo"></a>
+    </div>
+    <div class="w3-padding-64 w3-xlarge w3-text-grey" style="font-weight:bold">
+        <a th:href="@{'/products?gender=Men&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Men</a>
+
+        <a th:href="@{'/products?gender=Women&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Women</a>
+
+        <a th:href="@{'/products?gender=Girl&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Girl</a>
+
+        <a th:href="@{'/products?gender=Boy&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Boy</a>
+    </div>
+    <a th:href="@{/admin/}" class="w3-bar-item w3-button w3-padding">Administrator</a>
+    <a th:href="@{/my_orders}" class="w3-bar-item w3-button w3-padding " sec:authorize="isAuthenticated()">Account Management</a>
+</nav>
+
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+    <a th:href="@{/}">    <div class="w3-bar-item w3-padding-24 w3-wide">RTClothing</div>
+    </a>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right fa fa-bars" onclick="w3_open()">
+    </a>
+</header>
+
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<div class="w3-main" style="margin-left: 15vw; margin-right: 150px; padding-bottom: 100px">
+
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <form hidden="hidden" th:action="@{/logout}" method="post" name="logOutForm" class="w3-bar-item">
+    </form>
+    <header class="w3-container w3-xlarge">
+        <p class="w3-right">
+            <a th:href="@{/login}" sec:authorize="isAnonymous()" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
+            <a th:href="@{/shopping_cart}" class="w3-bar-item w3-button fa fa-shopping-cart w3-display-container"> <span class="w3-display-topright w3-red w3-circle" style="padding: 2px; font-size: 20px; padding-left: 5px; padding-right: 5px">[[${cart}]]</span> </a>
+            <a th:href="@{/search_item}" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
+            <button class="w3-bar-item w3-button" sec:authorize="isAuthenticated()" onclick="logOutFormSubmit()">Log Out</button>
+        </p>
+        <p sec:authorize="isAuthenticated()"> Welcome <span sec:authentication="principal.username"></span>  </p>
+    </header>
+
+    <div class="w3-container w3-black  w3-allerta w3-bar w3-large" style="padding:20px; padding-left: 50px">
+        <a th:href="@{'/products?gender=' + ${item.gender}  + '&sortType=itemID&sortOrder=des'}" style="text-decoration: none; margin-right: 10px"> <b>[[${item.gender}]]</b> </a>
+        <a th:href="@{'/products?gender=' + ${item.gender} + '&type=' + ${item.type} + '&sortType=itemID&sortOrder=des'}" style="text-decoration: none"> / <b style="margin-left: 10px">[[${item.type}]]</b></a>
+    </div>
+
+
+    <div class="w3-left" style="display: inline-block; margin-left: 5vw; margin-top: 50px; margin-bottom: 250px">
+
+        <ul style="display:inline-block; list-style-type: none; " class="w3-left w3-hide-small w3-hide-medium">
+            <li>
+                <img th:src="|data:image;base64,*{item.photo}|" style="width:100px; height: 100px; margin-bottom: 10px; display: inline-block   " class="w3-card w3-image w3-grayscale-min w3-hover-opacity" onclick="changeImage(this)">
+            </li>
+            <li th:each="image: ${imageList}">
+                <img th:src="|data:image;base64,*{image.photo}|" style="width:100px; height: 100px; margin-bottom: 10px; " class="w3-card w3-image w3-grayscale-min w3-hover-opacity" onclick="changeImage(this)">
+            </li>
+        </ul>
+
+        <div class="w3-row w3-hide-large">
+            <img th:each="image: ${imageList}" th:src="|data:image;base64,*{image.photo}|" style="width:100px; height: 100px; margin-right: 10px; margin-bottom: 10px; display: inline-block   " class="w3-card w3-image w3-grayscale-min w3-hover-opacity" onclick="changeImage(this)">
+            <img th:src="|data:image;base64,*{item.photo}|" style="width:100px; height: 100px; margin-right: 10px; margin-bottom: 10px; display: inline-block   " class="w3-card w3-image w3-grayscale-min w3-hover-opacity" onclick="changeImage(this)">
+        </div>
+
+        <div class="w3-container w3-left" style="display: inline-block">
+            <img id="current_image" th:src="|data:image;base64,*{item.photo}|"  style="width: 450px; height: 650px;min-width: 50% ;display: inline-block; margin-right: 5vw" class="w3-image m1 - m12" >
+
+        </div>
+        <div class="w3-left" >
+            <p class="w3-xlarge"> <b> [[${item.name}]]</b> </p>
+            <p class="w3-text-gray w3-cursive"> <b> Product ID: [[${item.itemID}]] </b>  </p>
+
+            <p id="noItem" class="w3-text-red w3-cursive w3-large" style="font-style: italic"></p>
+
+            <div class="w3-row" style="margin-bottom: 20px">
+                <button id="XSBtn" class="w3-button w3-border w3-margin" onclick="chooseSize(this.id)"  th:classappend="${item.XS == 0 ? 'w3-disabled' : ''}">XS</button>
+                <button id="SBtn" class="w3-button w3-border w3-margin" onclick="chooseSize(this.id)" th:classappend="${item.s == 0 ? 'w3-disabled' : ''}">S</button>
+                <button id="MBtn" class="w3-button w3-border w3-margin" onclick="chooseSize(this.id)" th:classappend="${item.m == 0 ? 'w3-disabled' : ''}">M</button>
+                <button id="LBtn" class="w3-button w3-border w3-margin" onclick="chooseSize(this.id)" th:classappend="${item.l == 0 ? 'w3-disabled' : ''}">L</button>
+                <button id="XLBtn" class="w3-button w3-border w3-margin" onclick="chooseSize(this.id)" th:classappend="${item.XL == 0 ? 'w3-disabled' : ''}">XL</button>
+            </div>
+            <form name="cartForm" th:action="@{/add_to_cart}" method="post">
+                <label> <b>Select Quantity:</b> </label>
+                <input id="inputNumber" type="number" name="quantity" style="padding: 0; width: 40px" value="1" class="w3-center" required min="1">
+                <p class="w3-cursive"> In Stock: <span id="inStock"> 0</span>  </p>
+                <br>
+
+                <button type="button" class="w3-button w3-black w3-xlarge" style="margin-left: 30px; margin-top: 30px; margin-bottom: 30px" onclick="addToCart()"> <b>Add To Cart </b>  <i class="fa fa-shopping-cart"></i></button>
+                <p class="w3-large"> <b> Description:</b></p>
+                <p> [[${item.description}]]</p>
+                <input id="size" name="size" type="hidden">
+                <input name="itemID" th:value="${item.itemID}" type="hidden">
+                <input id="XSValue" th:value="${item.XS}" type="hidden">
+                <input id="SValue" th:value="${item.s}" type="hidden">
+                <input id="MValue" th:value="${item.m}" type="hidden">
+                <input id="LValue" th:value="${item.l}" type="hidden">
+                <input id="XLValue" th:value="${item.XL}" type="hidden">
+            </form>
+        </div>
+
+    </div>
+
+</div>
+<div class="w3-container w3-black w3-center w3-bar w3-bottom w3-large w3-hide-small" style="height: 70px; z-index: 4" >
+    &copy Copyright of Tai Thanh Le <br> Enterprise Application Development
+</div>
+</body>
+
+<script th:inline="javascript">
+    let XSchosen = false;
+    let Schosen = false;
+    let Mchosen = false;
+    let Lchosen = false;
+    let XLchosen = false;
+
+    function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+    }
+
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+    }
+
+
+    function logOutFormSubmit() {
+        document.logOutForm.submit();
+    }
+
+    function changeImage(file) {
+        document.getElementById("current_image").src = file.src;
+    }
+
+    function chooseSize(btn_id) {
+        var btn = document.getElementById(btn_id);
+        if (!btn.classList.contains("w3-disabled")) {
+            document.getElementById("XSBtn").classList.remove("w3-green");
+            document.getElementById("SBtn").classList.remove("w3-green");
+            document.getElementById("MBtn").classList.remove("w3-green");
+            document.getElementById("LBtn").classList.remove("w3-green");
+            document.getElementById("XLBtn").classList.remove("w3-green");
+            document.getElementById("noItem").innerHTML = "";
+
+            btn.classList.add("w3-green");
+
+            let XSMax = document.getElementById("XSValue").value;
+            let SMax = document.getElementById("SValue").value;
+            let MMax = document.getElementById("MValue").value;
+            let LMax = document.getElementById("LValue").value;
+            let XLMax = document.getElementById("XLValue").value;
+
+            if (btn_id === "XSBtn") {
+                XSchosen = true;
+                document.getElementById("inputNumber").value = 1;
+                document.getElementById("inputNumber").max = XSMax;
+            } else if (btn_id === "SBtn") {
+                Schosen = true;
+                document.getElementById("inputNumber").value = 1;
+                document.getElementById("inputNumber").max = SMax;
+            } else if (btn_id === "MBtn") {
+                Mchosen = true;
+                document.getElementById("inputNumber").value = 1;
+                document.getElementById("inputNumber").max = MMax;
+            } else if (btn_id === "LBtn") {
+                Lchosen = true;
+                document.getElementById("inputNumber").value = 1;
+                document.getElementById("inputNumber").max = LMax;
+            } else {
+                XLchosen = true;
+                document.getElementById("inputNumber").value = 1;
+                document.getElementById("inputNumber").max = XLMax;
+            }
+            document.getElementById("inStock").innerHTML = document.getElementById("inputNumber").max;
+        }
+
+    }
+        function addToCart() {
+            if (XSchosen)
+                document.getElementById("size").value = "XS";
+            else if (Schosen)
+                document.getElementById("size").value = "S";
+            else if (Mchosen)
+                document.getElementById("size").value = "M";
+            else if (Lchosen)
+                document.getElementById("size").value = "L";
+            else if (XLchosen)
+                document.getElementById("size").value = "XL";
+
+            if (XSchosen || Schosen || Mchosen || Lchosen || XLchosen) {
+                document.cartForm.submit();
+            } else {
+                document.getElementById("noItem").innerHTML = "Please choose a size";
+            }
+         }
+
+</script>
+</html>

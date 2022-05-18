@@ -3,9 +3,11 @@ package com.example.projectdemo.Controller;
 import com.example.projectdemo.Model.Customer;
 import com.example.projectdemo.Model.Image;
 import com.example.projectdemo.Model.Item;
+import com.example.projectdemo.Model.Orders;
 import com.example.projectdemo.Service.CustomerService;
 import com.example.projectdemo.Service.ImageService;
 import com.example.projectdemo.Service.ItemService;
+import com.example.projectdemo.Service.OrderService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,9 @@ public class AdminController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private OrderService orderService;
+
     @GetMapping("/admin/*")
     public String showDefault() {
         return "redirect:/admin/items/page/1?sortType=itemID&sortOrder=asc";
@@ -47,6 +52,11 @@ public class AdminController {
     @GetMapping("/admin/accounts")
     public String getCustomerControlPanels(Model model) {
         return "redirect:/admin/accounts/page/1?sortType=customerID&sortOrder=asc";
+    }
+
+    @GetMapping("/admin/orders")
+    public String getOrderControlPanels(Model model) {
+        return "redirect:/admin/orders/page/1?sortType=orderID&sortOrder=asc";
     }
 
     @GetMapping("/admin/accounts/page/{pageNum}")
@@ -88,6 +98,43 @@ public class AdminController {
         return "admin/accounts";
     }
 
+
+    @GetMapping("/admin/orders/page/{pageNum}")
+    public String getOrders(@PathVariable(name = "pageNum") int pageNum,
+                            @Param("sortType") String sortType,
+                            @Param("sortOrder") String sortOrder,
+                            @Param("keyword") String keyword,
+                            @Param("message") String message,
+                            Model model) {
+        Page<Orders> page = orderService.listOrdersByPage(pageNum, sortType, sortOrder, keyword);
+        List<Orders> orderList = page.getContent();
+
+        long start = (pageNum - 1) * orderService.ORDERS_PER_PAGE + 1;
+        long end = start + orderService.ORDERS_PER_PAGE - 1;
+
+        if (end>page.getTotalElements()) {
+            end = page.getTotalElements();
+        }
+
+        String sortReversed = "";
+        if (sortOrder.equals("asc"))
+            sortReversed = "des";
+        else
+            sortReversed = "asc";
+
+        model.addAttribute("sortReversed", sortReversed);
+        model.addAttribute("message", message);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("orderList", orderList);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("startPage", start);
+        model.addAttribute("endPage", end);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("totalPage", orderService.getPage());
+        return "admin/orders";
+    }
+
     @GetMapping("/admin/accounts/changeStatus/{id}")
     public String changeCustomerStatus(@PathVariable(name="id")
                                      Long id,
@@ -96,10 +143,21 @@ public class AdminController {
             customerService.changeStatus(id);
             redirectAttributes.addAttribute("message", "User status has been changed ");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
         return "redirect:/admin/accounts/page/1?sortType=customerID&sortOrder=asc";
+    }
+
+    @GetMapping("admin/orders/completeOrder/{orderID}")
+    public String completeOrder(@PathVariable("orderID") Integer orderID) {;
+        orderService.changeStatusOrder(orderID, Orders.Status.Completed);
+        return "redirect:/admin/orders";
+    }
+
+    @GetMapping("admin/orders/declineOrder/{orderID}")
+    public String declineOrder(@PathVariable("orderID") Integer orderID) {
+        orderService.changeStatusOrder(orderID, Orders.Status.Declined);
+        return "redirect:/admin/orders";
     }
 
     @GetMapping("/admin/items/page/{pageNum}")

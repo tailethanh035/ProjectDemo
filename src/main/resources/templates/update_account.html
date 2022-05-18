@@ -6,14 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
     <link rel="icon" type="image/x-icon" th:href="@{/images/white_logo.jpg}">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    <title>Home Page</title>
+    <title>Update Account</title>
 </head>
 <style>
+    img {
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 250px;
+        max-height: 250px;
+    }
     .logo {
         width: 150px;
         height: 150px;
@@ -21,7 +26,6 @@
 </style>
 
 <body>
-
 <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
     <div class="w3-container w3-display-container w3-padding-16">
         <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
@@ -40,13 +44,14 @@
     <a th:href="@{/my_orders}" class="w3-bar-item w3-button w3-padding" sec:authorize="isAuthenticated()">Account Management</a>
 </nav>
 
-<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
-<a th:href="@{/}">    <div class="w3-bar-item w3-padding-24 w3-wide">RTClothing</div>
-</a>
-<a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right fa fa-bars" onclick="w3_open()">
-</a>
-</header>
 
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+    <a th:href="@{/}">    <div class="w3-bar-item w3-padding-24 w3-wide">RTClothing</div>
+    </a>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right fa fa-bars" onclick="w3_open()">
+    </a>
+
+</header>
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <div class="w3-main" style="margin-left:250px; margin-right: 150px">
@@ -60,22 +65,55 @@
             <a th:href="@{/login}" sec:authorize="isAnonymous()" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
             <a th:href="@{/shopping_cart}" class="w3-bar-item w3-button fa fa-shopping-cart w3-display-container"> <span class="w3-display-topright w3-red w3-circle" style="padding: 2px; font-size: 20px; padding-left: 5px; padding-right: 5px">[[${cart}]]</span> </a>
             <a th:href="@{/search_item}" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
-             <button class="w3-bar-item w3-button" sec:authorize="isAuthenticated()" onclick="logOutFormSubmit()">Log Out</button>
+            <button class="w3-bar-item w3-button" sec:authorize="isAuthenticated()" onclick="logOutFormSubmit()">Log Out</button>
         </p>
         <p sec:authorize="isAuthenticated()"> Welcome <span sec:authentication="principal.username"></span>  </p>
     </header>
 
-    <div class="w3-panel w3-green" th:if="${message != null }">
-        <h3>Alert</h3>
-        <p>[[${message}]]</p>
+    <div class="w3-center w3-container">
+        <div class="w3-xxlarge" style="display: inline-block; margin-right: 30px">
+            <a th:href="@{/my_orders}" style="text-decoration: none">My Orders</button> </a>
+        </div >
+        <p class="w3-xxlarge " style="display: inline-block; margin-right: 20px"> | </p>
+        <div class="w3-xxlarge  w3-black w3-card-4" style="display: inline-block; padding: 15px">
+            Update My Account
+        </div>
     </div>
 
-
-    <img th:src="@{images/background.jpg}" class="w3-image w3-center" style="margin-left: 3vw; margin-bottom: 100px">
+    <form class="w3-container" th:action="@{/updateCustomer}" th:object="${customer}" method="post" style="margin-bottom: 200px; margin-top: 50px">
+        <input type="hidden" th:field="*{customerID}">
+        <input type="hidden" th:field="*{username}">
+        <input type="hidden" th:field="*{enabled}">
+        <input type="hidden" th:field="*{role}">
+        <p>
+            <label class="w3-text-black"><b>First Name</b></label>
+            <input class="w3-input w3-border w3-white" th:field="*{firstName}" type="text"  required minlength="2" maxlength="12"></p>
+        <p>
+        <p>
+            <label class="w3-text-black"><b>Last Name</b></label>
+            <input class="w3-input w3-border w3-white" th:field="*{lastName}" type="text" required minlength="2" maxlength="12"></p>
+        <p>
+        <p>
+            <label class="w3-text-black"><b>Email</b></label>
+            <input class="w3-input w3-border w3-white" th:field="*{email}" type="email" required minlength="5" maxlength="50"></p>
+        <p>
+        <p>
+            <label class="w3-text-black"><b>Phone Number</b></label>
+            <input class="w3-input w3-border w3-white" th:field="*{phoneNumber}" type="tel" required minlength="8" maxlength="12"></p>
+        <p>
+        <p>
+            <label class="w3-text-black"><b>Address</b></label>
+            <input class="w3-input w3-border w3-white" th:field="*{address}" type="text" required minlength="4" maxlength="12"></p>
+        <p>
+        <div class="w3-center">
+            <button class="w3-btn w3-teal w3-large w3-bordered w3-center w3-margin-left" >Submit</button>
+        </div>
+    </form>
 </div>
 <div class="w3-container w3-black w3-center w3-bar w3-bottom w3-large w3-hide-small" style="height: 70px; z-index: 4" >
     &copy Copyright of Tai Thanh Le <br> Enterprise Application Development
 </div>
+
 </body>
 
 <script>

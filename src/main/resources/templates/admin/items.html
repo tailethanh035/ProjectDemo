@@ -7,47 +7,49 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/white_logo.jpg}">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    <title>Home Page</title>
+    <title>Item Control Panel</title>
 </head>
 
 <style>
     img {
-        min-width: 200px;
-        min-height: 200px;
-        max-width: 250px;
-        max-height: 250px;
+        min-width: 200px!important;
+        min-height: 200px!important;
+        max-width: 250px!important;
+        max-height: 250px!important;
+    }
+    img.logo {
+        width: 100px;
+        height: 100px;
     }
 </style>
 
 <body>
 <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
     <div class="w3-container w3-display-container w3-padding-16">
-        <i onclick="w3_open()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
-        <h3 class="w3-wide"><b>LOGO</b></h3>
+        <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+        <a th:href="@{/}"><img th:src="@{../../../images/white_logo.jpg}" class="w3-image logo"> </a>
     </div>
-    <div class="w3-padding-64 w3-large w3-text-black" style="font-weight:bold">
+    <div class="w3-padding-64 w3-large w3-text-black w3-xlarge" style="font-weight:bold">
         <a th:href="@{/}" class="w3-bar-item w3-button">Home</a>
         <a th:href="@{/admin/items/}" class="w3-bar-item w3-button">Items</a>
-        <a th:href="@{/admin/orders}" class="w3-bar-item w3-button">Orders</a>
+        <a th:href="@{/admin/orders/}" class="w3-bar-item w3-button">Orders</a>
         <a th:href="@{/admin/accounts}" class="w3-bar-item w3-button">Accounts</a>
     </div>
 </nav>
 
-<!-- Top menu on small screens -->
 <header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
     <div class="w3-bar-item w3-padding-24 w3-wide">LOGO</div>
     <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right" onclick="w3_open()"><i class="fa fa-bars"></i></a>
 </header>
 
-<!-- Overlay effect when opening sidebar on small screens -->
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
-<!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:250px; padding-bottom: 200px">
 
-<!--    Alert-->
     <div id="deleteAlert" class="w3-modal">
         <div class="w3-modal-content">
             <header class="w3-container w3-red">
@@ -65,13 +67,11 @@
         </div>
     </div>
 
-    <!-- Push down content on small screens -->
     <div class="w3-hide-large" style="margin-top:83px"></div>
 
     <form hidden="hidden" th:action="@{/logout}" method="post" name="logOutForm" class="w3-bar-item">
     </form>
 
-    <!-- Top header -->
     <header class="w3-container w3-xlarge">
         <p class="w3-right">
         <button class="w3-bar-item w3-button" onclick="logOutFormSubmit()">Log Out</button>
@@ -157,8 +157,6 @@
                 <td> [[${item.XL}]]</td>
                 <td> [[${item.date}]]</td>
                 <td class="w3-right">
-                    <a class="w3-button w3-red w3-center link-delete w3-margin-bottom" onclick="document.getElementById('deleteAlert').style.display='block'" th:href="@{'/admin/items/delete/' + ${item.itemID}}"> Delete </a>
-
                     <a class="w3-button w3-green w3-center w3-margin-bottom" th:href="@{'/admin/items/update/' + ${item.itemID}}"> Update</a>
                     <a class="w3-button w3-green w3-center w3-margin-bottom" th:href="@{'/admin/items/add_images/' + ${item.itemID}}"> Add Images</a>
                 </td>

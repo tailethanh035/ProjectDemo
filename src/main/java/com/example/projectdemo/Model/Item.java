@@ -33,7 +33,7 @@ public class Item {
     @Column
     private String description;
 
-    @Column(columnDefinition="LONGTEXT")
+    @Column(columnDefinition="TEXT")
     private String photo;
 
     @Column(nullable = false)
@@ -62,7 +62,11 @@ public class Item {
     @Column(nullable = false)
     private double retailPrice;
 
-    @Column double discountedPrice;
+    @Column
+    private double discountedPrice;
+
+    @Column
+    private double discountedBy;
 
     @Basic
     private java.sql.Date date;
@@ -70,6 +74,8 @@ public class Item {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
     public Set<Image> images;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    public Set<OrderDetail> orderDetails;
 
     public void setDate(java.sql.Date date) {
         this.date = date;
@@ -199,5 +205,21 @@ public class Item {
 
     public void setDiscountedPrice(double discountedPrice) {
         this.discountedPrice = discountedPrice;
+    }
+
+    public double getDiscountedBy() {
+        return discountedBy;
+    }
+
+    public void setDiscountedBy(double discountedBy) {
+        this.discountedBy = discountedBy;
+    }
+
+    public Set<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(Set<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 }

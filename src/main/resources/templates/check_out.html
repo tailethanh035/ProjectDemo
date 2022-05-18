@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/white_logo.jpg}">
+
+    <title>Check out</title>
+</head>
+<style>
+    img {
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 250px;
+        max-height: 250px;
+    }
+</style>
+
+<body>
+
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+    <div class="w3-container w3-display-container w3-padding-16">
+        <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+        <a th:href="@{/}"><img th:src="@{images/white_logo.jpg}" class="w3-image logo"></a>
+    </div>
+    <div class="w3-padding-64 w3-xlarge w3-text-grey" style="font-weight:bold">
+        <a th:href="@{'/products?gender=Men&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Men</a>
+
+        <a th:href="@{'/products?gender=Women&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Women</a>
+
+        <a th:href="@{'/products?gender=Girl&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Girl</a>
+
+        <a th:href="@{'/products?gender=Boy&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Boy</a>
+    </div>
+    <a th:href="@{/admin/}" class="w3-bar-item w3-button w3-padding">Administrator</a>
+    <a th:href="@{/my_orders}" class="w3-bar-item w3-button w3-padding" sec:authorize="isAuthenticated()">Account Management</a>
+</nav>
+
+
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+    <a th:href="@{/}"> <div class="w3-bar-item w3-padding-24 w3-wide">RTClothing</div>
+    </a>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right fa fa-bars" onclick="w3_open()">
+    </a>
+</header>
+
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<div class="w3-main" style="margin-left:250px; margin-right: 3vw; margin-bottom: 200px">
+
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <form hidden="hidden" th:action="@{/logout}" method="post" name="logOutForm" class="w3-bar-item">
+    </form>
+    <header class="w3-container w3-xlarge" style="margin-bottom: 100px; margin-right: 8vw">
+        <p class="w3-right">
+            <a th:href="@{/login}" sec:authorize="isAnonymous()" class="w3-bar-item w3-button">Log in</button> </a>
+            <a th:href="@{/shopping_cart}" class="w3-bar-item w3-button fa fa-shopping-cart w3-display-container"> <span class="w3-display-topright w3-red w3-circle" style="padding: 2px; font-size: 20px; padding-left: 5px; padding-right: 5px">[[${cart}]]</span> </a>
+            <a href="#" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
+             <button class="w3-bar-item w3-button" sec:authorize="isAuthenticated()" onclick="logOutFormSubmit()">Log Out</button>
+        </p>
+        <p sec:authorize="isAuthenticated()"> Welcome <span sec:authentication="principal.username"></span>  </p>
+    </header>
+
+    <div class="w3-container w3-left w3-hide-small w3-hide-medium w3-responsive" style="width: 45vw; height: fit-content; border-width: 20px; border-color: red">
+        <div th:each="cart : ${cartList}" class="w3-container w3-border-top w3-border-bottom w3-card-4 " style="width: 100%; padding-top: 10px; padding-bottom: 10px;padding-right: 50px     ;margin-bottom: 10px">
+            <div class="w3-left">
+                <img th:src="|data:image;base64,*{cart.photo}|" class="w3-image w3-card-4">
+            </div>
+            <div class="w3-right w3-large">
+                <ul style="list-style-type: none">
+                    <li>
+                        <b>Name:  </b> [[${cart.name}]]
+                    </li>
+                    <li>
+                        <b>Price:  </b> [[${cart.price}]] $
+                    </li>
+                    <li>
+                        <b>Size:   </b> [[${cart.size}]]  ( Quantity: [[${cart.quantity}]] )
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+     <form class="w3-container w3-large w3-right w3-border w3-card-4" style="padding: 20px; border-width: 25px;margin-bottom: 200px;width: 20vw; min-width: 280px; margin-right: 8vw" method="post" th:action="@{/complete_order}">
+         <input type="hidden" name="total" th:value="${totalCart}">
+         <div class="w3-center" id="contact" style="margin-bottom: 50px">
+             <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">Billing Information</span>
+         </div>
+            <div class="w3-section">
+                <label><b>First name:</b> </label>
+                <p > [[${customer.firstName}]]</p>
+            </div>
+            <div class="w3-section">
+                <label><b>Last name:</b></label>
+                <p> [[${customer.lastName}]]</p>
+            </div>
+            <div class="w3-section">
+                <label><b>Email:</b></label>
+                <p> [[${customer.email}]]</p>
+            </div>
+            <div class="w3-section">
+                <label><b>Address:</b></label>
+                <input class="w3-input w3-border w3-hover-border-black" style="width:100%;" th:field="${customer.address}" name="address" required>
+            </div>
+            <div class="w3-section">
+                <label><b>Phone Number:</b></label>
+                <input class="w3-input w3-border w3-hover-border-black" type="tel" style="width:100%;" name="phone" th:field="${customer.phoneNumber}" required maxlength="12" minlength="8">
+            </div>
+            <div class="w3-right" style="margin-right: 50px">
+                <p class="w3-xlarge"> <b class="w3-xlarge"> Total Price:</b> <br> [[${totalCart}]] $ </p>
+                <p class="w3-large w3-text-gray"> <i class="fa fa-truck"> Free shipping </i> </p>
+            </div>
+             <div class="w3-center" >
+                 <button class=" w3-center w3-button w3-black w3-xlarge" style="width: 70%; margin-top: 50px; padding: 15px "> Purchase</button>
+             </div>
+        </form>
+
+</div>
+<div class="w3-container w3-black w3-center w3-bar w3-bottom w3-large w3-hide-small" style="height: 70px; z-index: 4" >
+    &copy Copyright of Tai Thanh Le <br> Enterprise Application Development
+</div>
+</body>
+
+<script>
+    function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+    }
+
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+    }
+
+
+    function logOutFormSubmit() {
+        document.logOutForm.submit();
+    }
+</script>
+</html>

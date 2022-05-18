@@ -8,9 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
-@Table(name = "customers")
+@Table
 public class Customer{
     public Customer() {
         role = "CUSTOMER";
@@ -25,7 +26,7 @@ public class Customer{
     @Column(length = 20, nullable = false, unique = true)
     private String username;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String password;
 
     @Column(length = 128, nullable = false, unique = true)
@@ -37,13 +38,17 @@ public class Customer{
     @Column(length = 20, nullable = false)
     private String lastName;
 
+    @Column
     private String role;
 
     @Column(length = 32, nullable = false)
     private String address;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer")
+    public Set<Orders> orders;
 
     public Long getCustomerID() {
         return customerID;

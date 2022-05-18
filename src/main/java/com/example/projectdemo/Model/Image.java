@@ -11,10 +11,10 @@ public class Image {
     @Column(name = "image_id")
     private Long image_id;
 
-    @Column(columnDefinition="LONGTEXT")
+    @Column(columnDefinition="TEXT")
     private String photo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "item_ID")
     private Item item;
 

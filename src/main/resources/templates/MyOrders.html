@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/white_logo.jpg}">
+
+    <title>My Orders</title>
+</head>
+<style>
+    img {
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 250px;
+        max-height: 250px;
+    }
+    .logo {
+        width: 150px;
+        height: 150px;
+    }
+</style>
+
+<body>
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+    <div class="w3-container w3-display-container w3-padding-16">
+        <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+        <a th:href="@{/}"><img th:src="@{images/white_logo.jpg}" class="w3-image logo"></a>
+    </div>
+    <div class="w3-padding-64 w3-xlarge w3-text-grey" style="font-weight:bold">
+        <a th:href="@{'/products?gender=Men&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Men</a>
+
+        <a th:href="@{'/products?gender=Women&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Women</a>
+
+        <a th:href="@{'/products?gender=Girl&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Girl</a>
+
+        <a th:href="@{'/products?gender=Boy&sortType=itemID&sortOrder=des'}" class="w3-bar-item w3-button">Boy</a>
+    </div>
+    <a th:href="@{/admin/}" class="w3-bar-item w3-button w3-padding">Administrator</a>
+    <a th:href="@{/my_orders}" class="w3-bar-item w3-button w3-padding" sec:authorize="isAuthenticated()">Account Management</a>
+</nav>
+
+
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+    <a th:href="@{/}">    <div class="w3-bar-item w3-padding-24 w3-wide">RTClothing</div>
+    </a>
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding-24 w3-right fa fa-bars" onclick="w3_open()">
+    </a>
+
+</header>
+
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<div class="w3-main" style="margin-left:250px; margin-right: 150px">
+
+    <div class="w3-hide-large" style="margin-top:83px"></div>
+
+    <form hidden="hidden" th:action="@{/logout}" method="post" name="logOutForm" class="w3-bar-item">
+    </form>
+    <header class="w3-container w3-xlarge">
+        <p class="w3-right">
+            <a th:href="@{/login}" sec:authorize="isAnonymous()" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
+            <a th:href="@{/shopping_cart}" class="w3-bar-item w3-button fa fa-shopping-cart w3-display-container"> <span class="w3-display-topright w3-red w3-circle" style="padding: 2px; font-size: 20px; padding-left: 5px; padding-right: 5px">[[${cart}]]</span> </a>
+            <a th:href="@{/search_item}" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
+            <button class="w3-bar-item w3-button" sec:authorize="isAuthenticated()" onclick="logOutFormSubmit()">Log Out</button>
+        </p>
+        <p sec:authorize="isAuthenticated()"> Welcome <span sec:authentication="principal.username"></span>  </p>
+    </header>
+
+    <div class="w3-center w3-container">
+        <div class="w3-xxlarge w3-black w3-card-4" style="display: inline-block; margin-right: 30px; padding: 15px">
+            My Orders
+        </div >
+        <p class="w3-xxlarge" style="display: inline-block; margin-right: 20px"> | </p>
+        <div class="w3-xxlarge" style="display: inline-block">
+            <a th:href="@{/update_account}" style="text-decoration: none">Update My Account</button> </a>
+        </div>
+    </div>
+
+
+    <div class="w3-panel w3-green" th:if="${message != null }">
+        <h3>Alert</h3>
+        <p>[[${message}]]</p>
+    </div>
+
+    <div class="w3-responsive" style="margin-right: 3vw; margin-bottom: 200px; margin-top: 50px">
+        <TABLE class="w3-table w3-striped w3-bordered">
+            <tr>
+                <th> <a th:href="@{'/admin/orders/page/' + ${currentPage} + '?sortType=orderID&sortOrder=' + ${sortReversed}}">Order ID
+                </a>
+                    <span th:if="${sortType == 'orderID'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th> <a th:href="@{'/admin/orders/page/' + ${currentPage} + '?sortType=username&sortOrder=' + ${sortReversed}}">Username
+                </a>
+                    <span th:if="${sortType == 'username'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th> <a th:href="@{'/admin/orders/page/' + ${currentPage} + '?sortType=address&sortOrder=' + ${sortReversed}}">Address
+                </a>
+                    <span th:if="${sortType == 'address'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th> <a th:href="@{'/admin/orders/page/' + ${currentPage} + '?sortType=number&sortOrder=' + ${sortReversed}}">Phone Number
+                </a>
+                    <span th:if="${sortType == 'number'}" th:class="${sortOrder == 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down'}"> </span>
+                </th>
+                <th> Images
+                </th>
+                <th> Size </th>
+                <th> Quantity</th>
+                <th> Total Payment</th>
+                <th></th>
+            </tr>
+            <tr th:each="order : ${orderList}" class="w3-large">
+                <td> [[${order.orderID}]]</td>
+                <td> [[${order.address}]]</td>
+                <td> [[${order.number}]]</td>
+                <td>
+                    <div th:each="orderDetail: ${order.getOrderDetails()}" class="w3-margin">
+                        <img th:src="|data:image;base64,*{orderDetail.getItem().getPhoto()}|" class="w3-image">
+                    </div>
+                </td>
+                <td>
+                    <div th:each="orderDetail: ${order.getOrderDetails()}" style="height: 250px">
+                        <p class="w3-xlarge w3-center" th:text="${orderDetail.getSize()}"></p>
+                    </div>
+                </td>
+                <td>
+                    <div th:each="orderDetail: ${order.getOrderDetails()}" style="height: 250px">
+                        <p class="w3-xlarge w3-center " th:text="${orderDetail.getQuantity()}"></p>
+                    </div>
+                </td>
+                <td> <p class="w3-center w3-xlarge">[[${order.total}]] $</p> </td>
+                <td class="w3-center">
+                    <a class="w3-button w3-green w3-center w3-margin link-delete" onclick="document.getElementById('deleteAlert').style.display='block'" th:href="@{'/admin/orders/completeOrder/' + ${order.orderID}}" th:if="${#strings.toString(order.status) == 'Pending'}"> Completed</a>
+                    <a class="w3-button w3-red w3-center w3-margin link-delete" onclick="document.getElementById('deleteAlert').style.display='block'" th:href="@{'/admin/orders/declineOrder/' + ${order.orderID}}" th:if="${#strings.toString(order.status) == 'Pending'}"> Declined</a>
+                    <p th:if="${#strings.toString(order.status) == 'Completed'}"><i class="fa fa-check w3-text-green"></i> Complete</p>
+                    <p th:if="${#strings.toString(order.status) == 'Declined'}"><span class="w3-text-red">X</span> Declined</p>
+                    <p th:if="${#strings.toString(order.status) == 'Pending'}"><span class="w3-text-yellow">X</span> Pending</p>
+                </td>
+            </tr>
+        </TABLE>
+    </div>
+</div>
+<div class="w3-container w3-black w3-center w3-bar w3-bottom w3-large w3-hide-small" style="height: 70px; z-index: 4" >
+    &copy Copyright of Tai Thanh Le <br> Enterprise Application Development
+</div>
+</body>
+
+<script>
+    function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+    }
+
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+    }
+
+
+    function logOutFormSubmit() {
+        document.logOutForm.submit();
+    }
+</script>
+</html>
